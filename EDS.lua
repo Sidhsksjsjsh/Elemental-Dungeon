@@ -6,20 +6,8 @@ local VirtualUser = game:GetService("VirtualUser")
 local VIM = game:GetService("VirtualInputManager")
 
 
-local Neverlose_Main = loadstring(game:HttpGet("https://raw.githubusercontent.com/Mana42138/Neverlose-UI/main/Source.lua"))()
-local Win = Neverlose_Main:Window({
-    Title = "Elemental Dungeon Script",
-    CFG = "Fhri",
-    Key = Enum.KeyCode.RightControl,
-    External = {
-        KeySystem = false, -- oops i forgot 
-        Key = {
-            "Test",
-            "Beta",
-            "FhriIsHandsome"
-        }
-    }
-})
+local OrionLib = loadstring(game:HttpGet("https://pastebin.com/raw/NMEHkVTb"))()
+local Window = OrionLib:MakeWindow({Name = "VIP Turtle Hub V3",HidePremium = false,SaveConfig = false,ConfigFolder = "TurtleFi"})
 
 function Attack()
     VirtualUser:CaptureController()
@@ -27,15 +15,17 @@ function Attack()
     VirtualUser:Button1Down(Vector2.new(1280, 672))
 end
 
+local function rconsolenotify(str1,str2,str3,str4)
+OrionLib:MakeNotification({Name = str1,Content = str2,Image = "rbxassetid://" .. str3,Time = str4})
+end
+
 if game.PlaceId == 10515146389 then
-    local TabSection1 = Win:TSection("Misc")
-    local Main_sec = TabSection1:Tab("Main")
-    local Main = Main_sec:Section("Main")
+    local Main = Window:MakeTab({Name = "Main",Icon = "rbxassetid://",PremiumOnly = false})
     -- local Dungeon = Main_sec:Section("Dungeon")
 
-    Main:Toggle("Auto Chest", function(t)
-        Auto_Chest = t
-    end)
+    Main:AddToggle({Name = "Chest Farm",Default = false,Callback = function(Value)
+        Auto_Chest = Value
+    end})
 
     spawn(function()
         while task.wait() do
@@ -107,96 +97,43 @@ if game.PlaceId == 10515146389 then
 
 else
 
-local TabSection1 = Win:TSection("Misc")
+local Main = Window:MakeTab({Name = "Main",Icon = "rbxassetid://",PremiumOnly = false})
+local Other = Window:MakeTab({Name = "Misc",Icon = "rbxassetid://",PremiumOnly = false})
 
-local Autofarm = TabSection1:Tab("Autofarm")
-
-local Autofarm_sec = Autofarm:Section("Autofarm")
-local Autofarm_Extras = Autofarm:Section("Autofarm [Extra]")
-local Other = Autofarm:Section("Other")
-local Conf = Autofarm:Section("Config")
-
-local Is_Loaded = false
-
-if not isfile('Neverlose/Auto_Load.txt') then
-    writefile("Neverlose/Auto_Load.txt", HttpService:JSONEncode({
-        ["AutoLoad"] = false,
-    }))
-end
-
-local Get_ALC = Conf:Toggle("Auto Load Config", function(t)
-    Auto_Load = t
-    if Auto_Load then
-        writefile("Neverlose/Auto_Load.txt", HttpService:JSONEncode({
-            ["AutoLoad"] = true,
-        }))
-    else
-        writefile("Neverlose/Auto_Load.txt", HttpService:JSONEncode({
-            ["AutoLoad"] = false,
-        }))
-    end
-end)
-
-local Get_Load = HttpService:JSONDecode(readfile('Neverlose/Auto_Load.txt')).AutoLoad
-
-if Get_Load then
-    Get_ALC:Set(true)
-else
-    Get_ALC:Set(false)
-end
-
-spawn(function()
-    while task.wait() do
-        if Auto_Load then
-            pcall(function()
-                if Is_Loaded == false then
-                    Neverlose_Main:LoadCfg(Neverlose_Main:LastConfigSaved())
-                    Is_Loaded = true
-                end
-            end)
-        end
-    end
-end)
-
-Autofarm_sec:Toggle("Tp Farming", function(t)
+Main:AddToggle({Name = "TP Farm",Default = false,Callback = function(t)
     Tp_Farm = t
-end)
+end})
 
-Autofarm_sec:Toggle("Element Farm", function(t)
+Main:AddToggle({Name = "Element Farm",Default = false,Callback = function(t)
     Element_Farm = t
     if not Tp_Farm then
-        Neverlose_Main:Notify({
-            Title = "NL",
-            Text = "You must Enable Tp Farming!",
-            Time = 2,
-            AutoClose = true
-        })
+        rconsolenotify("TH","You must Enable TP Farming!","",5)
     end
-end)
+end})
 
-Autofarm_Extras:Toggle("Bring Mobs [Testing]", function(t)
+Main:AddToggle({Name = "Bring Mobs",Default = false,Callback = function(t)
     Bring_Mobs = t
-end)
+end})
 
-Autofarm_Extras:Toggle("Hit Aura", function(t)
+Main:AddToggle({Name = "Hit Aura",Default = false,Callback = function(t)
     StartFarm = t
-end)
+end})
 
-Autofarm_Extras:Toggle("Auto Collect Drops", function(t)
+Main:AddToggle({Name = "Auto Collect Drops",Default = false,Callback = function(t)
     Auto_Collect_Drops = t
-end)
+end})
 
-Autofarm_Extras:Toggle("Collect Potions", function(t)
+Main:AddToggle({Name = "Collect Potions",Default = false,Callback = function(t)
     Auto_Get_Potions = t
-end)
+end})
 
-Autofarm_Extras:Toggle("Auto Heal", function(t)
+Main:AddToggle({Name = "Auto Heal",Default = false,Callback = function(t)
     Auto_Heal = t
-end)
+end})
 
-Autofarm_Extras:Toggle("Auto Chest", function(t)
+Main:AddToggle({Name = "Auto Chest",Default = false,Callback = function(t)
     Auto_Chest = t
-end)
+end})
 
 spawn(function()
     while task.wait() do
@@ -224,12 +161,12 @@ spawn(function()
     end
 end)
 
-Other:Toggle("Auto Retry", function(t)
+Other:AddToggle({Name = "Auto Retry",Default = false,Callback = function(t)
     Auto_Retry = t
-end)
-Other:Toggle("Auto Start", function(t)
+end})
+Other:AddToggle({Name = "Auto Start",Default = false,Callback = function(t)
     Auto_Start = t
-end)
+end})
 
 spawn(function()
     while task.wait() do
