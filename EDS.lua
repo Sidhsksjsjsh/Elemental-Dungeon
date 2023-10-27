@@ -12,7 +12,7 @@ local Win = Neverlose_Main:Window({
     CFG = "Fhri",
     Key = Enum.KeyCode.RightControl,
     External = {
-        KeySystem = true,
+        KeySystem = false, -- oops i forgot 
         Key = {
             "Test",
             "Beta",
